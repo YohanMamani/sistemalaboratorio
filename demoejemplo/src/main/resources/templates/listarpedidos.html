@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body>
+
+	<header th:replace="layout/layout :: header"></header>
+<br>
+<center><h1>SOLICITUD DE PEDIDOS</h1></center>
+	<div class="container py-4">
+
+		<div class="card bg-light">
+			<div class="card-header" th:text="${titulo}"></div>
+			<div class="card-body">
+
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>id</th>
+							<th>ruc</th>
+							<th>farmacia</th>
+							<th>fecha de envio</th>
+							<th>Aceptar</th>
+							<th>Rechazar</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="pedido: ${pedidos}">
+							<td><a class="btn btn-primary btn-xs"
+								th:href="@{/verpedido/} + ${pedido.id}" th:text="${pedido.id}"></a></td>
+							<td th:text="${pedido.ruc}"></td>
+							<td th:text="${pedido.nombre}"></td>
+							<td th:text="${pedido.fecha}"></td>
+							<td><a class="btn btn-primary btn-sm"
+								th:href="@{/confirmarpedido/} + ${pedido.id}" th:text="'Aceptar'"></a></td>
+							<td><a class="btn btn-danger btn-sm"
+								th:href="@{/eliminarpedido/} + ${pedido.id}" th:text="'Rechazar'"
+								onclick="return confirm('Estás seguro que quieres rechazar?');"></a></td>
+						</tr>
+					</tbody>
+
+				</table>
+				<nav th:replace="paginator-nav :: paginator"></nav>
+			</div>
+		</div>
+
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Login Page</title>
+<link rel="stylesheet" th:href="@{/css/plantillacss.css}" />
+</head>
+<body>
+
+
+<form th:action="@{/login}" th:object="${loginform}" method="post">
+ <h1>SISLAB</h1>
+ <center>		<img th:src="@{/images/spring.png}" alt="Spring logo" style="width:100px; height:100px;" />
+</center>
+ 
+  <div class="inset">
+  <p>
+    <label for=""username"">USUARIO</label>
+  <input type="text" id="username" name="username" class="login-username" autofocus="true" required="true" placeholder="Usuario" />
+  </p>
+    <p>
+    <label for="password">PASSWORD</label>
+  <input type="password" id="Password" name="Password" class="login-password" required="true" placeholder="Password" />
+  </p>
+  
+    <p>
+    <input type="checkbox" name="remember" id="remember">
+    <label for="remember">recordar password por 14 dias</label>
+  </p>
+  
+  </div>
+  <p class="p-container">
+    <span>Forgot password ?</span>
+  <input type="submit" name="Login" value="Log In"/>  </p>
+  
+
+</form>
+
+
+</body>
+</html>

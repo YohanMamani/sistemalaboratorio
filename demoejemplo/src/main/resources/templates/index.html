@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title>Users</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+	integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+	crossorigin="anonymous">
+<!-- <link rel="stylesheet" href="../css/shards.min.css"> -->
+</head>
+<body>
+	<header th:replace="layout/layout :: header"></header>
+	<center><h1>MANTENIMIENTO DE PRODUCTOS</h1></center>
+	<div class="container my-2">
+		<div class="card">
+			<div class="card-body">
+				<div th:switch="${students}" class="container my-5">
+					<p class="my-5">
+						<a href="/productos/signup" class="btn btn-primary"><i
+							class="fas fa-user-plus ml-2"> AGREGAR PRODUCTO</i></a>
+					</p>
+					<div class="col-md-10">
+						<h2 th:case="null">No hay productos por ahora</h2>
+						<div th:case="*">
+							<table class="table table-striped table-responsive-md">
+								<thead>
+									<tr>
+										<th>Nombre</th>
+										<th>Cantidad</th>
+										<th>Precio</th>
+										<th>Editar</th>
+										<th>Eliminar</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="student : ${students}">
+										<td th:text="${student.nombre}"></td>
+										<td th:text="${student.cantidad}"></td>
+										<td th:text="${student.precio}"></td>
+										<td><a th:href="@{/productos/edit/{id}(id=${student.id})}"
+											class="btn btn-primary">EDITAR</a></td>
+										<td><a
+											th:href="@{/productos/delete/{id}(id=${student.id})}"
+											class="btn btn-primary">ELIMINAR</a></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>
