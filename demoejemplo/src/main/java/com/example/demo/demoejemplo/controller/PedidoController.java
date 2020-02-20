@@ -92,8 +92,8 @@ public class PedidoController {
 		if (id > 0) {
 			Pedido pedido = pedidoservice.findOne(id);
 
-			pedidoservice.confirmar(id);
-			flash.addFlashAttribute("success", "Pedido confirmado con éxito!");
+			String mensaje= pedidoservice.confirmar(id);
+			flash.addFlashAttribute("success", mensaje);
 
 		}
 		return "redirect:/listarpedidos";

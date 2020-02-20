@@ -24,6 +24,6 @@ public interface IPedidoService {
 	
 	public void delete(Long id);
 	
-	public void confirmar(Long id);	
+	public String confirmar(Long id);	
 
 }
