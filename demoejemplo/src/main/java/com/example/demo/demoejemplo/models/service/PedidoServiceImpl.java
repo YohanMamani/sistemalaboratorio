@@ -30,8 +30,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.demoejemplo.models.dao.IPedidoDao;
 import com.example.demo.demoejemplo.models.dao.IPedidoDetalleDao;
 import com.example.demo.demoejemplo.models.dao.IPedidocrudDao;
+import com.example.demo.demoejemplo.models.dao.IProductoBDDao;
+import com.example.demo.demoejemplo.models.dao.IProductoDao;
 import com.example.demo.demoejemplo.models.entity.Pedido;
 import com.example.demo.demoejemplo.models.entity.PedidoDetalle;
+import com.example.demo.demoejemplo.models.entity.Producto;
+import com.example.demo.demoejemplo.models.entity.ProductoBD;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
 
@@ -41,6 +45,8 @@ public class PedidoServiceImpl implements IPedidoService{
     private static final String USER_AGENT = "Mozilla/5.0";
     private static final String SERVER_PATH = "http://localhost/";
     static java.util.Date fecha = new Date();
+    
+    float montototal = 0;
     
     static String nombrelaboratorio = "Empresa SISLAB";
     
@@ -52,10 +58,11 @@ public class PedidoServiceImpl implements IPedidoService{
     
     static String fechaconfirmacion = strDate;
     
+    @Autowired
+    IProductoBDDao productoDao;
 	
 	@Autowired
 	IPedidoDao pedidodao;
-	
 	
 	@Autowired
 	IPedidocrudDao pedidocrud;
@@ -257,17 +264,70 @@ public class PedidoServiceImpl implements IPedidoService{
 
 	}
 
-
+	public boolean actualizarstock(Pedido pedido) {
+			
+		Iterable<ProductoBD> productos = productoDao.findAll();
+		
+		List<PedidoDetalle> pedidosdetalle = pedido.getPedidosdetalles();
+		
+		List<ProductoBD> pedidosdetalleactual = new ArrayList<ProductoBD>();
+		boolean sentence =true;
+		for(PedidoDetalle pede : pedidosdetalle) {
+			
+			for(ProductoBD prod : productos) {
+				
+				if(pede.getNombre().equals(prod.getNombre())) {
+					
+					int cantactual = 0;
+					
+					cantactual = prod.getCantidad() - pede.getCantidad(); 
+					
+					if(cantactual < 0 ) {
+						sentence = false;
+					}else {
+						prod.setCantidad(cantactual);
+						pedidosdetalleactual.add(prod);
+					}
+					
+					
+				}
+				
+			}
+		}
+		
+		
+		if(pedidosdetalle.size() != pedidosdetalleactual.size()) {
+			sentence = false;
+		}
+		
+		if(sentence) {
+			for(ProductoBD prd :pedidosdetalleactual) {
+				for(PedidoDetalle pd :pedidosdetalle) {
+					if(prd.getNombre().equals(pd.getNombre())) {
+						montototal= montototal + prd.getPrecio()*pd.getCantidad();
+						productoDao.save(prd);
+					}
+				}
+			}
+		}
+		
+		return sentence;
+	}
+	
 
 
 	@Override
-	public void confirmar(Long id) {
+	public String confirmar(Long id) {
 
 		
 		Pedido pedidobd = pedidodao.findById(id).orElse(null);
 
+		if(!actualizarstock(pedidobd)) {
+			return "No cuenta con el Stock suficiente para aceptar el pedido";
+		}
 		
-		String mensaje = "Se confirma la entrega del pedido enviado el dia "+ pedidobd.getFecha() +". Confirmamos el envío";
+		
+		String mensaje = "Se confirma la entrega del pedido enviado el dia "+ pedidobd.getFecha() +". Monto total : S/"+montototal+".";
 		
 		
         //Creamos un objeto JSON
@@ -332,6 +392,8 @@ public class PedidoServiceImpl implements IPedidoService{
         pedidobd.setEstado("CONFIRMADO");
     	pedidodao.save(pedidobd);
 		
+		return "Se confirmo el pedido con éxito";
+
 	}
 
 
